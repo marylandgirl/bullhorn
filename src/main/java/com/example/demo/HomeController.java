@@ -1,13 +1,11 @@
 package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -23,8 +21,15 @@ public class HomeController {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    MessageRepository messageRepository;
+
+    @Autowired
+    private IAuthenticationFacade authenticationFacade;
+
     @RequestMapping("/")
-    public String index() {
+    public String index(Model model) {
+        model.addAttribute("username",currentUserNameSimple());
         return "index";
     }
 
@@ -73,4 +78,30 @@ public class HomeController {
         return "index";
     }
 
+    @RequestMapping("/username")
+    public String currentUserNameSimple() {
+        Authentication authentication = authenticationFacade.getAuthentication();
+        return authentication.getName();
+    }
+
+    @RequestMapping("/messages")
+    public String listMessages(Model model) {
+        String username = currentUserNameSimple();
+        User user = userRepository.findByUsername(username);
+        Set<Message> messages = new HashSet<Message>();
+        messages = user.getMessages();
+        model.addAttribute("user", user);
+        model.addAttribute("messages", messages);
+        model.addAttribute("username",username);
+        return "messages";
+    }
+
+    @RequestMapping("/detail/{id}")
+    public String showMessage(@PathVariable("id") long id, Model model) {
+        String msgText = messageRepository.findById(id).get().getMsgText();
+        model.addAttribute("username",currentUserNameSimple());
+        model.addAttribute("msg", msgText);
+        model.addAttribute("id", id);
+        return "onemessage";
+    }
 }

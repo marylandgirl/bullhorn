@@ -24,7 +24,7 @@ public class BullhornApplication {
 			messageRepository.save(message);
 
 			User admin = new User("admin","super@domain.com","admin","Super","Man",true);
-			Role adminRole = new Role("super","ROLE_ADMIN");
+			Role adminRole = new Role("admin","ROLE_ADMIN");
 			message = new Message("Mighty Mouse", "Here I come to save the day!",admin);
 
 			userRepository.save(admin);
