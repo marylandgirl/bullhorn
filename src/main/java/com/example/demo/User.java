@@ -4,6 +4,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="users_db")
@@ -36,10 +38,15 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public Set<Message> messages;
+
     public User() {
+        this.messages = new HashSet<Message>();
     }
 
     public User(String username, String email, String password, String firstName, String lastName, boolean enabled) {
+        super();
         this.username = username;
         this.email = email;
         this.setPassword(password);
@@ -103,5 +110,13 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Set<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<Message> messages) {
+        this.messages = messages;
     }
 }

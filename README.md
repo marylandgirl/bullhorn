@@ -1,3 +1,3 @@
-### This project is a template for incorporating Spring Boot Security into a application.
+### This project is an implementation of week 7's challenge from Java Bootcamp
 
-To make use of it, clone it and build your application on top of it.
+The Bullhorn application is a message application that allows users to post messages.

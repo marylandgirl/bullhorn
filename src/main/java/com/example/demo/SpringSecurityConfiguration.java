@@ -21,12 +21,20 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin").hasRole("ADMIN")
                 .antMatchers("/register").hasRole("ADMIN")
                 .antMatchers("/**").hasAnyRole("ADMIN","USER")
+                .antMatchers("/h2-console/**").permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login").permitAll()
                 .and()
                 .logout()
                 .logoutSuccessUrl("/login?logout=true").permitAll();
+
+        //This snippet is needed to be able to view h2 console while testing
+        httpSecurity.csrf()
+                .ignoringAntMatchers("/h2-console/**");
+        httpSecurity.headers()
+                .frameOptions()
+                .sameOrigin();
     }
 
     @Autowired
@@ -44,4 +52,5 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
